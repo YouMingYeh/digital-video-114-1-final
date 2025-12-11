@@ -1,6 +1,6 @@
-# Depth-Aware ROI Video Compression
+# Depth-Aware Region of Interest Video Coding for Ray-Marched Fractal Content
 
-Utilizing ray-marched depth maps to optimize H.264 video encoding through region-of-interest (ROI) based quality distribution.
+Utilizing depth maps from ray marching to optimize H.264 video encoding through region-of-interest (ROI) based quality distribution.
 
 ## Overview
 
