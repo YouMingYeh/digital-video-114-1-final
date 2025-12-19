@@ -1,0 +1,31 @@
+======================================================================
+EXPERIMENT RESULTS SUMMARY
+======================================================================
+
+### ROTATION SEGMENT ###
+
+BD-Rate (vs Baseline):
+  bilateral: +18.30%
+  blur: +31.35%
+
+Quality at CRF=28:
+Method          Bitrate     PSNR     SSIM     Size
+--------------------------------------------------
+baseline           5711    31.78   0.9845    3.49MB
+bilateral          4220    30.57   0.9787    2.58MB
+blur               2392    28.39   0.9652    1.46MB
+
+
+### ZOOM SEGMENT ###
+
+BD-Rate (vs Baseline):
+  bilateral: +17.99%
+  blur: +53.84%
+
+Quality at CRF=28:
+Method          Bitrate     PSNR     SSIM     Size
+--------------------------------------------------
+baseline           9347    30.21   0.9879    5.71MB
+bilateral          8268    29.39   0.9851    5.05MB
+blur               6930    27.82   0.9780    4.23MB
+

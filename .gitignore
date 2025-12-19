@@ -36,6 +36,15 @@ Mandelbulb_Dataset/
 # Log files
 *.log
 
+# LaTeX auxiliary files
+*.aux
+*.out
+*.toc
+*.bbl
+*.blg
+report/*.pdf
+report/fig*.pdf
+
 # OS files
 .DS_Store
 Thumbs.db

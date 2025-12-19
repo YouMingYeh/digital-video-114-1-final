@@ -1,0 +1,290 @@
+\documentclass[conference]{IEEEtran}
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{multirow}
+
+\begin{document}
+
+\title{An Empirical Analysis of Depth-Guided Preprocessing for RGBD Video Compression}
+
+\author{
+\IEEEauthorblockN{Anonymous Author}
+\IEEEauthorblockA{Anonymous Institution}
+}
+
+\maketitle
+
+\begin{abstract}
+We investigate depth-guided preprocessing as a potential approach for RGBD video compression. Our method applies depth-weighted bilateral or Gaussian filtering to reduce complexity in background regions before encoding with standard H.264. Using rigorous BD-Rate evaluation on the Mandelbulb dataset, we find that preprocessing methods \textbf{do not improve} compression efficiency: bilateral filtering exhibits +18\% BD-Rate (requires 18\% more bits for equivalent quality), while Gaussian blur shows +31\% to +54\% BD-Rate depending on content dynamics. The preprocessing reduces file size at fixed CRF but introduces quality degradation that outweighs the bitrate savings. We analyze why this trade-off occurs and discuss limited scenarios where accepting background quality loss may be acceptable. Our findings highlight the importance of proper experimental methodology in video compression research.
+\end{abstract}
+
+\begin{IEEEkeywords}
+RGBD video compression, depth-guided preprocessing, BD-Rate evaluation, bilateral filtering, rate-distortion analysis
+\end{IEEEkeywords}
+
+\section{Introduction}
+
+The proliferation of RGB-D sensors in consumer devices, autonomous vehicles, and mixed reality applications has created interest in efficient compression of color-plus-depth video streams. A natural question arises: can depth information guide compression to allocate bits more efficiently?
+
+Several approaches exist: joint coding in 3D-HEVC \cite{3dhevc}, ROI-based encoder hints, and preprocessing to reduce source complexity. This paper investigates the preprocessing approach, where depth-guided filtering simplifies background regions before encoding.
+
+\textbf{Our hypothesis} was that reducing background complexity would allow the encoder to achieve better rate-distortion trade-offs. \textbf{Our findings} contradict this hypothesis: when evaluated using the standard BD-Rate metric, preprocessing methods require \textit{more} bits to achieve equivalent quality, not fewer.
+
+Our contributions are:
+\begin{itemize}
+    \item Rigorous evaluation using BD-Rate with multiple CRF operating points
+    \item Comprehensive analysis on both static (rotation) and dynamic (zoom) depth content
+    \item Honest reporting showing preprocessing hurts compression efficiency
+    \item Discussion of why preprocessing fails and limited acceptable use cases
+\end{itemize}
+
+\section{Related Work}
+
+\subsection{RGBD Video Compression}
+
+The 3D-HEVC standard \cite{3dhevc} introduced joint coding tools for multiview video plus depth (MVD), including Depth Modeling Modes (DMM) and depth-texture prediction. These exploit texture-depth correlation for efficient compression but require specialized encoder implementations not available in standard pipelines.
+
+\subsection{ROI-Based Video Encoding}
+
+FFmpeg's \texttt{addroi} filter allows specifying regions with quality offsets through delta-QP values. However, in CRF (Constant Rate Factor) mode, these hints interact unpredictably with rate control. Our preliminary experiments confirmed that ROI hints often fail to redistribute bits as intended, sometimes increasing total bitrate.
+
+\subsection{Perceptual Video Coding}
+
+Foveated rendering \cite{foveated} reduces peripheral detail based on gaze tracking, exploiting the human visual system's reduced acuity outside the fovea. Depth-guided approaches similarly exploit perceptual importance, using geometric depth as a proxy for visual attention without requiring eye tracking hardware.
+
+\subsection{BD-Rate Methodology}
+
+Bjontegaard \cite{bdrate} introduced the BD-Rate metric for comparing video codec efficiency. By fitting curves to rate-distortion points and computing the average bitrate difference at equivalent quality levels, BD-Rate provides a single number summarizing codec performance across the entire operating range.
+
+\section{Method}
+
+\subsection{Depth-Guided Importance Mapping}
+
+Given an RGB frame $I$ and corresponding depth map $D$, we compute an importance map $M$ where higher values indicate foreground (closer) regions requiring quality preservation:
+\begin{equation}
+M(x,y) = \frac{D(x,y) - D_{min}}{D_{max} - D_{min}}
+\end{equation}
+
+For the Mandelbulb dataset, higher depth values correspond to closer objects, making this a ``near-high'' importance mapping.
+
+\subsection{Bilateral Filter Preprocessing}
+
+We blend original and bilateral-filtered images based on importance:
+\begin{equation}
+I'(x,y) = M(x,y) \cdot I(x,y) + (1-M(x,y)) \cdot B(I)(x,y)
+\end{equation}
+where $B(I)$ is the bilateral-filtered image with parameters $d=15$, $\sigma_{color}=150$, $\sigma_{space}=150$. The bilateral filter preserves edges while smoothing textures, making it suitable for reducing encoder complexity without destroying structural information.
+
+\subsection{Gaussian Blur Preprocessing}
+
+For comparison, we evaluate more aggressive Gaussian blur preprocessing:
+\begin{equation}
+I'(x,y) = M(x,y) \cdot I(x,y) + (1-M(x,y)) \cdot G_\sigma(I)(x,y)
+\end{equation}
+where $G_\sigma$ denotes Gaussian blur with kernel size 15. This provides stronger complexity reduction but also more visible quality degradation.
+
+\section{Experimental Setup}
+
+\subsection{Dataset}
+
+We use the Mandelbulb fractal dataset containing 500 frames at 2048$\times$2048 resolution with corresponding depth maps. We evaluate on two segments with different characteristics:
+\begin{itemize}
+    \item \textbf{Rotation segment} (frames 0-149): Camera rotates around the fractal. Depth distribution remains relatively stable across frames.
+    \item \textbf{Zoom segment} (frames 300-449): Camera zooms into the fractal. Depth changes dynamically as background regions become foreground.
+\end{itemize}
+
+Testing on both segments evaluates robustness to different depth dynamics.
+
+\subsection{Encoding Configuration}
+
+All experiments use FFmpeg with libx264:
+\begin{itemize}
+    \item Preset: medium (balanced speed/compression)
+    \item Pixel format: yuv420p
+    \item Frame rate: 30 fps
+    \item CRF values: 18, 23, 28, 33, 38, 43 (6 points for BD-Rate)
+\end{itemize}
+
+\subsection{Evaluation Metrics}
+
+\textbf{BD-Rate} (Bjontegaard Delta Rate) \cite{bdrate} is the standard metric in video compression research:
+\begin{itemize}
+    \item Measures average \% bitrate difference at equivalent PSNR
+    \item \textbf{Negative}: Method saves bits (better efficiency)
+    \item \textbf{Positive}: Method requires more bits (worse efficiency)
+\end{itemize}
+
+We also report:
+\begin{itemize}
+    \item \textbf{PSNR}: Peak Signal-to-Noise Ratio (dB)
+    \item \textbf{SSIM}: Structural Similarity Index
+    \item \textbf{ROI metrics}: Quality in foreground regions (importance $>$ 0.5)
+    \item \textbf{Background metrics}: Quality in background regions (importance $<$ 0.3)
+\end{itemize}
+
+\section{Results}
+
+\subsection{Rate-Distortion Curves}
+
+Figure~\ref{fig:rd} shows RD curves for all methods on both segments. The baseline (green) consistently achieves higher PSNR than preprocessing methods at equivalent bitrates. Preprocessing methods produce videos with lower bitrates at each CRF setting, but also lower quality.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{fig1_rd_curves.png}
+\caption{Rate-distortion curves for rotation (a) and zoom (b) segments. Baseline achieves higher quality at equivalent bitrate. Preprocessing reduces both bitrate and quality at each CRF.}
+\label{fig:rd}
+\end{figure}
+
+\subsection{BD-Rate Analysis}
+
+Table~\ref{tab:bdrate} presents the critical finding: \textbf{all preprocessing methods have positive BD-Rate}, meaning they require more bits to achieve equivalent quality compared to baseline.
+
+\begin{table}[htbp]
+\caption{BD-Rate Results vs. Baseline (positive = worse)}
+\label{tab:bdrate}
+\centering
+\begin{tabular}{@{}lcc@{}}
+\toprule
+Segment & Bilateral & Blur \\
+\midrule
+Rotation & +18.3\% & +31.4\% \\
+Zoom & +18.0\% & +53.8\% \\
+\midrule
+\textbf{Average} & \textbf{+18.2\%} & \textbf{+42.6\%} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Figure~\ref{fig:bdrate} visualizes these results. Key observations:
+\begin{itemize}
+    \item Bilateral consistently requires $\sim$18\% more bits across both segments
+    \item Blur is significantly worse on zoom (+53.8\%) vs rotation (+31.4\%)
+    \item Dynamic depth content (zoom) amplifies preprocessing inefficiency
+\end{itemize}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.9\linewidth]{fig2_bd_rate.png}
+\caption{BD-Rate comparison. All bars are positive (above zero), indicating preprocessing methods are \textit{less} efficient than baseline.}
+\label{fig:bdrate}
+\end{figure}
+
+\subsection{Quality at Fixed CRF}
+
+Table~\ref{tab:crf} shows detailed results at CRF=28 for both segments.
+
+\begin{table}[htbp]
+\caption{Quality and Size at CRF=28}
+\label{tab:crf}
+\centering
+\begin{tabular}{@{}llcccc@{}}
+\toprule
+Segment & Method & Size & $\Delta$Size & PSNR & SSIM \\
+\midrule
+\multirow{3}{*}{Rotation}
+& Baseline & 3.49 MB & -- & 31.78 & 0.9845 \\
+& Bilateral & 2.58 MB & -26\% & 30.57 & 0.9787 \\
+& Blur & 1.46 MB & -58\% & 28.39 & 0.9652 \\
+\midrule
+\multirow{3}{*}{Zoom}
+& Baseline & 5.71 MB & -- & 30.21 & 0.9879 \\
+& Bilateral & 5.05 MB & -12\% & 29.39 & 0.9851 \\
+& Blur & 4.23 MB & -26\% & 27.82 & 0.9780 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+While preprocessing achieves 12-58\% size reduction, the quality loss (0.8-3.4 dB PSNR) is substantial. The zoom segment shows smaller size reductions because dynamic depth limits the amount of ``safe'' background to blur.
+
+\subsection{SSIM Analysis}
+
+Figure~\ref{fig:ssim} shows SSIM curves, measuring structural similarity. The pattern mirrors PSNR results: baseline consistently outperforms preprocessing methods.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{fig5_ssim_curves.png}
+\caption{SSIM vs bitrate. Baseline maintains higher structural similarity across all bitrates.}
+\label{fig:ssim}
+\end{figure}
+
+\subsection{Size-Quality Trade-off}
+
+Figure~\ref{fig:tradeoff} visualizes the trade-off between size reduction and quality loss at CRF=28. The ideal position would be lower-right (high size reduction, low quality loss), but all methods show quality degradation proportional to or exceeding size savings.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.85\linewidth]{fig4_tradeoff.png}
+\caption{Trade-off visualization. Blur on rotation achieves 58\% size reduction but loses 3.4 dB PSNR.}
+\label{fig:tradeoff}
+\end{figure}
+
+\section{Discussion}
+
+\subsection{Why Preprocessing Fails}
+
+The hypothesis that ``simpler background = better compression efficiency'' is fundamentally flawed for three reasons:
+
+\begin{enumerate}
+    \item \textbf{Quality is measured against originals}: Preprocessing permanently degrades the source. Decoded frames will always differ more from originals than baseline, regardless of how well the encoder preserves the preprocessed content.
+
+    \item \textbf{Modern encoders are already efficient}: H.264 and newer codecs efficiently encode smooth regions with minimal bits. The encoder already allocates fewer bits to low-complexity areas. Preprocessing provides little additional benefit while guaranteeing quality loss.
+
+    \item \textbf{Information destruction is irreversible}: Unlike encoder QP modulation which can be tuned, preprocessing permanently destroys information. There is no recovery path.
+\end{enumerate}
+
+\subsection{Why Blur Fails Worse on Zoom}
+
+The zoom segment's +53.8\% BD-Rate (vs +31.4\% on rotation) reveals a critical weakness: when depth changes dynamically, preprocessing destroys information that becomes important in later frames. As the camera zooms in, background regions become foreground, but the blur has already destroyed their detail.
+
+\subsection{When Trade-offs May Be Acceptable}
+
+Despite negative efficiency results, preprocessing may be acceptable in limited scenarios:
+\begin{itemize}
+    \item \textbf{Video conferencing}: Background quality is genuinely unimportant; users focus on faces
+    \item \textbf{Extreme bandwidth constraints}: When any reduction matters more than quality
+    \item \textbf{Real-time encoding}: Preprocessing is computationally cheaper than encoder-integrated ROI
+    \item \textbf{Perceptual applications}: Where background blur is aesthetically desirable (bokeh effect)
+\end{itemize}
+
+These are \textit{quality trade-offs}, not efficiency improvements.
+
+\subsection{Methodological Lessons}
+
+Our initial experiments using fixed ``target bitrate'' comparison showed apparent improvements (+1.78 dB at 500 kbps). This was \textbf{methodologically flawed}: two-pass ABR encoding achieved different actual bitrates for different methods at the same target. The preprocessed videos used more bits while appearing to ``improve'' quality.
+
+\textbf{Proper methodology requires}:
+\begin{itemize}
+    \item Multiple CRF operating points to generate full RD curves
+    \item BD-Rate calculation by interpolating curves at equivalent quality
+    \item Testing on diverse content (static and dynamic depth)
+\end{itemize}
+
+This is standard practice in video compression research \cite{bdrate} and essential for valid conclusions.
+
+\section{Conclusion}
+
+We investigated depth-guided preprocessing for RGBD video compression and found that it \textbf{does not improve compression efficiency}. Rigorous BD-Rate evaluation shows:
+\begin{itemize}
+    \item Bilateral filtering: +18\% BD-Rate (needs 18\% more bits for same quality)
+    \item Gaussian blur: +31\% to +54\% BD-Rate, worse on dynamic content
+\end{itemize}
+
+The preprocessing approach trades quality for file size rather than improving the rate-distortion relationship. While this trade-off may be acceptable in specific scenarios (video conferencing, extreme bandwidth constraints), it should not be presented as a compression improvement.
+
+Future work should explore approaches that operate \textit{within} the encoder (per-CTU QP modulation, adaptive quantization) rather than preprocessing, which inherently loses information before encoding begins.
+
+\section*{Reproducibility}
+
+All code and experimental scripts are available in the project repository. Experiments used FFmpeg 6.x with libx264 on the Mandelbulb dataset (500 frames, 2048$\times$2048, with depth maps).
+
+\begin{thebibliography}{00}
+\bibitem{3dhevc} G. Tech, Y. Chen, K. M\"uller, et al., ``Overview of the Multiview and 3D Extensions of High Efficiency Video Coding,'' IEEE Trans. Circuits Syst. Video Technol., vol. 26, no. 1, pp. 35-49, Jan. 2016.
+\bibitem{foveated} B. Guenter, M. Finch, S. Drucker, D. Tan, and J. Snyder, ``Foveated 3D Graphics,'' ACM Trans. Graphics, vol. 31, no. 6, article 164, Nov. 2012.
+\bibitem{bdrate} G. Bjontegaard, ``Calculation of average PSNR differences between RD-curves,'' ITU-T SG16 Doc. VCEG-M33, Austin, TX, Apr. 2001.
+\end{thebibliography}
+
+\end{document}
