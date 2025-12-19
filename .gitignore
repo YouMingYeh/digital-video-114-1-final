@@ -27,6 +27,9 @@ test_*.png
 # Video files (too large for git)
 *.mp4
 
+# Generated experiment artifacts
+outputs/
+
 # Dataset (too large for git)
 Mandelbulb_Dataset/
 

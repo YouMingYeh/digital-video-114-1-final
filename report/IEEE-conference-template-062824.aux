@@ -1,29 +1,43 @@
 \relax 
-\@writefile{toc}{\contentsline {section}{\numberline {I}Introduction}{1}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {I-A}}Maintaining the Integrity of the Specifications}{1}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {II}Prepare Your Paper Before Styling}{1}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-A}}Abbreviations and Acronyms}{1}{}\protected@file@percent }
-\newlabel{AA}{{\mbox  {II-A}}{1}{}{subsection.2.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-B}}Units}{1}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-C}}Equations}{1}{}\protected@file@percent }
-\newlabel{eq}{{1}{1}{}{equation.1}{}}
-\citation{b7}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-D}}\LaTeX  -Specific Advice}{2}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-E}}Some Common Mistakes}{2}{}\protected@file@percent }
-\newlabel{SCM}{{\mbox  {II-E}}{2}{}{subsection.2.5}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-F}}Authors and Affiliations}{2}{}\protected@file@percent }
-\newlabel{AAA}{{\mbox  {II-F}}{2}{}{subsection.2.6}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-G}}Identify the Headings}{2}{}\protected@file@percent }
-\newlabel{ITH}{{\mbox  {II-G}}{2}{}{subsection.2.7}{}}
 \citation{b1}
 \citation{b2}
 \citation{b3}
-\citation{b3}
-\citation{b3}
-\citation{b3}
 \citation{b4}
 \citation{b5}
-\citation{b6}
+\@writefile{toc}{\contentsline {section}{\numberline {I}Introduction}{1}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {II}Related Work}{1}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-A}}Region-of-Interest Video Coding}{1}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-B}}Depth-Guided Compression}{1}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-C}}Perceptual Video Coding}{1}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {III}Proposed Method}{1}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-A}}System Overview}{1}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Depth-aware encoding pipeline: (a) Original frame, (b) Depth map, (c) Importance map derived from depth, (d) ROI regions with 5 quality levels (Q0-Q4: red=lowest, orange=low, yellow=medium, light-green=high, green=highest quality).}}{2}{}\protected@file@percent }
+\newlabel{fig:pipeline}{{1}{2}{}{figure.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-B}}Depth to Importance Conversion}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-C}}Multi-Level QP Offset Quantization}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-D}}ROI Region Extraction}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-E}}Encoder Integration}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {IV}Experimental Setup}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-A}}Dataset}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-B}}Encoding Configuration}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-C}}Evaluation Metrics}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {V}Results}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-A}}Rate-Distortion Performance}{3}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Rate-distortion curves: (a) Global PSNR shows similar performance, (b) ROI PSNR demonstrates consistent improvement with depth-aware encoding.}}{3}{}\protected@file@percent }
+\newlabel{fig:rd}{{2}{3}{}{figure.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-B}}ROI Quality Improvement}{3}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces ROI PSNR Improvement by Compression Level (5 Quality Levels)}}{3}{}\protected@file@percent }
+\newlabel{tab:results}{{I}{3}{}{table.1}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces ROI PSNR comparison across compression levels. Improvement annotations show the quality gain from depth-aware encoding.}}{3}{}\protected@file@percent }
+\newlabel{fig:improvement}{{3}{3}{}{figure.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-C}}Bitrate-Matched Comparison}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-D}}Visual Quality}{3}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Visual quality comparison (center crop): (a) Reference, (b) Baseline CRF 40, (c) Depth-aware CRF 40. Note improved detail preservation in the depth-aware result.}}{3}{}\protected@file@percent }
+\newlabel{fig:visual}{{4}{3}{}{figure.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-E}}Bitrate Considerations}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {VI}Discussion}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-A}}Strengths}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-B}}Limitations}{3}{}\protected@file@percent }
 \bibcite{b1}{1}
 \bibcite{b2}{2}
 \bibcite{b3}{3}
@@ -31,16 +45,7 @@
 \bibcite{b5}{5}
 \bibcite{b6}{6}
 \bibcite{b7}{7}
-\bibcite{b8}{8}
-\bibcite{b9}{9}
-\bibcite{b10}{10}
-\bibcite{b11}{11}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-H}}Figures and Tables}{3}{}\protected@file@percent }
-\newlabel{FAT}{{\mbox  {II-H}}{3}{}{subsection.2.8}{}}
-\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {II-H}0a}Positioning Figures and Tables}{3}{}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Table Type Styles}}{3}{}\protected@file@percent }
-\newlabel{tab1}{{I}{3}{}{table.1}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Example of a figure caption.}}{3}{}\protected@file@percent }
-\newlabel{fig}{{1}{3}{}{figure.1}{}}
-\@writefile{toc}{\contentsline {section}{References}{3}{}\protected@file@percent }
-\gdef \@abspage@last{3}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-C}}Future Work}{4}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {VII}Conclusion}{4}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{References}{4}{}\protected@file@percent }
+\gdef \@abspage@last{4}
