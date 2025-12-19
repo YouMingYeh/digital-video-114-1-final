@@ -19,7 +19,7 @@ from dataclasses import dataclass, asdict
 from PIL import Image
 import tempfile
 
-from config import OUTPUT_DIR, COLOR_FRAMES_DIR, DEPTH_FRAMES_DIR, EncoderConfig, DepthConfig
+from config import OUTPUT_DIR, COLOR_FRAMES_DIR, DEPTH_FRAMES_DIR, DepthConfig
 from utils import load_color_frame, load_depth_frame, depth_to_importance, compute_psnr, compute_ssim
 from method2_depth_quality import apply_depth_quality_bilateral, apply_depth_quality_blur
 

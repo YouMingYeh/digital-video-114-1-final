@@ -20,7 +20,6 @@ from pathlib import Path
 from dataclasses import dataclass, asdict
 from typing import Optional
 from scipy import interpolate
-import time
 
 from config import OUTPUT_DIR, COLOR_FRAMES_DIR, DEPTH_FRAMES_DIR, DepthConfig
 from utils import (
