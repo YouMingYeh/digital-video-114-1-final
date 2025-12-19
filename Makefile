@@ -1,37 +1,25 @@
 # Compilers
-CXX = g++
-CC = gcc
 NVCC = nvcc
 
-# Paths (absolute path)
-# use ta's version
-LODEPNG_DIR = /work/b10502010/pp25/hw3/lodepng
-GLM_DIR = /work/b10502010/pp25/hw3/glm
+# Paths
+LODEPNG_DIR = lodepng
+GLM_DIR = glm
 
 # Compiler flags
 CPPFLAGS = -I$(LODEPNG_DIR) -I$(GLM_DIR)/include
-CXXFLAGS = -std=c++17 -O3
-NVCCFLAGS = -std=c++17 -O3 -arch=sm_70 -Xptxas=-v --use_fast_math
+NVCCFLAGS = -std=c++17 -O3 -arch=sm_86 -Xptxas=-v --use_fast_math
 
 # Source files
 LODEPNG = $(LODEPNG_DIR)/lodepng.cpp
 
-# Targets
-TARGET_CUDA = hw3
-TARGET_CPU = hw3_cpu
+# Target
+TARGET = mandelbulb
 
-# CUDA version
-all: $(TARGET_CUDA)
+all: $(TARGET)
 
-$(TARGET_CUDA): hw3.cu $(LODEPNG)
-	$(NVCC) $(NVCCFLAGS) $(CPPFLAGS) hw3.cu $(LODEPNG) -o $(TARGET_CUDA)
-
-# CPU version
-cpu: $(TARGET_CPU)
-
-$(TARGET_CPU): hw3_cpu.cpp $(LODEPNG)
-	$(CXX) $(CXXFLAGS) $(CPPFLAGS) hw3_cpu.cpp $(LODEPNG) -o $(TARGET_CPU)
+$(TARGET): mandelbulb.cu $(LODEPNG)
+	$(NVCC) $(NVCCFLAGS) $(CPPFLAGS) mandelbulb.cu $(LODEPNG) -o $(TARGET)
 
 # Clean
 clean:
-	rm -f $(TARGET_CPU) $(TARGET_CUDA)
+	rm -f $(TARGET)

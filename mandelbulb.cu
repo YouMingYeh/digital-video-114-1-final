@@ -427,8 +427,8 @@ int main(int argc, char **argv)
     // cudaFree(d_image_ptr);
 
     // Clean up events
-    cudaEventDestroy(start_kernel);
-    cudaEventDestroy(stop_kernel);
+    // cudaEventDestroy(start_kernel);
+    // cudaEventDestroy(stop_kernel);
 
     return 0;
 }
