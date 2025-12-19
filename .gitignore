@@ -24,6 +24,9 @@ ffmpeg2pass-*.log.mbtree
 test_*.mp4
 test_*.png
 
+# Video files (too large for git)
+*.mp4
+
 # Dataset (too large for git)
 Mandelbulb_Dataset/
 
